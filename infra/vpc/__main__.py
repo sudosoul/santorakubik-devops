@@ -8,20 +8,19 @@ vpc_name = config.require("vpc_name")
 number_of_availability_zones = config.require_int("number_of_availability_zones")
 vpc_cidr = config.require("vpc_cidr")
 
-# Make sure we are deploying to John's AWS account
+# Make sure we are deploying to Brownfence:
 if aws.get_caller_identity().account_id != "927123100668":
-    print(f"ERROR: IN WRONG AWS ACCOUNT!\nCurrent ID:{current.account_id}")
+    print(f"ERROR: IN WRONG AWS ACCOUNT!\nCurrent ID:{aws.get_caller_identity().account_id}")
     exit() 
 
 # Create VPC with following specs:
-# 3 public subnets
-# 3 private subnets
+# 3 public subnets / 3 private subnets
 # 3 NAT Gateways each assigned a dedicated EIP
 vpc = awsx.ec2.Vpc(vpc_name, 
   cidr_block = vpc_cidr,
   number_of_availability_zones = number_of_availability_zones,
   tags = {
-      "Name": "main",
+      "Name": vpc_name,
       "managed_by": "pulumi"
   }
 )
