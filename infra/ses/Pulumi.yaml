@@ -3,4 +3,4 @@ runtime:
   name: python
   options:
     virtualenv: venv
-description: vpc
+description: ses

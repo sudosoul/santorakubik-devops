@@ -1,4 +1,3 @@
-"""An AWS Python Pulumi program"""
 import pulumi
 import pulumi_aws as aws
 import pulumi_awsx as awsx
@@ -14,8 +13,8 @@ if aws.get_caller_identity().account_id != "927123100668":
     exit() 
 
 # Create VPC with following specs:
-# 3 public subnets / 3 private subnets
-# 3 NAT Gateways each assigned a dedicated EIP
+# 2 public subnets / 2 private subnets
+# 2 NAT Gateways each assigned a dedicated EIP
 vpc = awsx.ec2.Vpc(vpc_name, 
   cidr_block = vpc_cidr,
   number_of_availability_zones = number_of_availability_zones,
