@@ -7,7 +7,7 @@ vpc_name = config.require("vpc_name")
 number_of_availability_zones = config.require_int("number_of_availability_zones")
 vpc_cidr = config.require("vpc_cidr")
 
-# Make sure we are deploying to Brownfence:
+# Make sure we are deploying to Santorakubik:
 if aws.get_caller_identity().account_id != "927123100668":
     print(f"ERROR: IN WRONG AWS ACCOUNT!\nCurrent ID:{aws.get_caller_identity().account_id}")
     exit() 
