@@ -10,6 +10,7 @@ if aws.get_caller_identity().account_id != "927123100668":
     exit()
 
 # Create SES domain identity
+# Note: We use us-east-1 for SES for max compatibility
 colerange_ses_domain_identity = aws.ses.DomainIdentity("colerange_ses_domain_identity", domain="colerange.us")
 
 # Add SES verification record to Route53
@@ -22,3 +23,29 @@ colerange_ses_verification_record = aws.route53.Record("colerange_ses_verificati
 )
 colerange_ses_domain_identity_verification = aws.ses.DomainIdentityVerification("colerange_ses_domain_identity_verification", domain=colerange_ses_domain_identity.id)
 
+# Create IAM user for SES SMTP access
+ses_smtp_user = aws.iam.User("ses_smtp_user", name="ses_smtp_user")
+ses_smtp_user_access_key = aws.iam.AccessKey("ses_smtp_user_access_key", user=ses_smtp_user.name)
+ses_smtp_user_policy_document = aws.iam.get_policy_document(statements=[aws.iam.GetPolicyDocumentStatementArgs(
+    effect="Allow",
+    actions=["ses:SendRawEmail"],
+    resources=["*"],
+)])
+ses_smtp_user_policy = aws.iam.UserPolicy("ses_smtp_user_policy",
+    user=ses_smtp_user.name,
+    policy=ses_smtp_user_policy_document.json
+)
+# Store SES SMTP creds in SSM (in us-east-2, our default region for app)
+aws_east_2 = aws.Provider('aws-east-2', region='us-east-2')
+aws.ssm.Parameter("ssm_ses_smtp_username", 
+    type="String", 
+    name="/nextcloud/smtp/username", 
+    value=ses_smtp_user_access_key.id, 
+    opts=pulumi.ResourceOptions(provider=aws_east_2)
+)
+aws.ssm.Parameter("ssm_ses_smtp_password", 
+    type="SecureString", 
+    name="/nextcloud/smtp/password", 
+    value=ses_smtp_user_access_key.ses_smtp_password_v4,
+    opts=pulumi.ResourceOptions(provider=aws_east_2)
+)
