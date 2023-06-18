@@ -2,7 +2,7 @@ import pulumi
 import pulumi_aws as aws
 
 config = pulumi.Config()
-#vpc_name = config.require("vpc_name")
+ses_domain = config.require("ses_domain")
 
 # Make sure we are deploying to Santorakubik:
 if aws.get_caller_identity().account_id != "927123100668":

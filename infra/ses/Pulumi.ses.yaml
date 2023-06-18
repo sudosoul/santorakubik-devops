@@ -1,2 +1,4 @@
 config:
   aws:region: us-east-1
+  ses_domain: colerange.us
+  
