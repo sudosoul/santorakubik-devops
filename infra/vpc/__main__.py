@@ -24,7 +24,7 @@ vpc = awsx.ec2.Vpc(vpc_name,
   }
 )
 
-pulumi.export("vpc_id", vpc.id)
+pulumi.export("vpc_id", vpc.vpc_id)
 pulumi.export("outbound_ips", [vpc.eips[i].public_ip for i in range(number_of_availability_zones)])
 pulumi.export("public_subnet_ids", vpc.public_subnet_ids)
 pulumi.export("private_subnet_ids", vpc.private_subnet_ids)
