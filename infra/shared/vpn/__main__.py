@@ -1,6 +1,5 @@
 import pulumi
 import pulumi_aws as aws
-import pulumi_tls as tls
 import os
 
 resource_prefix = "org-vpn"
@@ -127,7 +126,7 @@ def create_vpn():
         ),
         vpc_id=vpc_stack.get_output("vpc_id"),
         security_group_ids=[vpn_sg.id],
-        session_timeout_hours=12,
+        session_timeout_hours=1,
         self_service_portal="enabled",
         server_certificate_arn=vpn_server_cert.certificate_arn,
         split_tunnel=True,
