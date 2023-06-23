@@ -102,6 +102,7 @@ def create_vpn():
             tags={
                 "Name": f"{resource_prefix}-sg",
             })
+        pulumi.export("vpn_sg_id", vpn_sg.id)
         return vpn_sg
     
     ############ vpn ############
