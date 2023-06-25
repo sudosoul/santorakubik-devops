@@ -1,8 +1,10 @@
 import pulumi
 import pulumi_eks as eks
 import pulumi_aws as aws
-import iam
 import pulumi_tls as tls
+import iam
+import kms
+
 
 config = pulumi.Config()
 vpc_stack = pulumi.StackReference("santorakubik/brownfence/vpc")
@@ -25,7 +27,7 @@ cluster_sg = aws.ec2.SecurityGroup("cluster-sg",
             to_port=0,
             protocol="all",
             self=True,
-            description="allow all traffic from THIS sg"
+            description="allow all traffic from this sg"
         ),
         # Allow all traffic from VPN
         aws.ec2.SecurityGroupIngressArgs(
@@ -51,32 +53,24 @@ cluster_sg = aws.ec2.SecurityGroup("cluster-sg",
 )
 
 # create cluster ssh key pair & save to SSM
-cluster_ssh_keypair = tls.PrivateKey("brownfence-eks-ssh-keypair", algorithm="ED25519")
+ssh_keypair = tls.PrivateKey("ssh-keypair", algorithm="ED25519")
 aws.ssm.Parameter("org_vpn_client_private_key", 
     type="SecureString", 
     name="/brownfence/eks/ssh_private_key", 
-    value=cluster_ssh_keypair.private_key_openssh
+    value=ssh_keypair.private_key_openssh
 )
 aws.ssm.Parameter("org_vpn_client_public_key", 
     type="String", 
     name="/brownfence/eks/ssh_public_key", 
-    value=cluster_ssh_keypair.public_key_openssh
+    value=ssh_keypair.public_key_openssh
 )
-ec2_keypair = aws.ec2.KeyPair("brownfence-ec2-ssh-keypair", key_name="brownfence-eks-ssh-keypair", public_key=cluster_ssh_keypair.public_key_openssh)
+ec2_keypair = aws.ec2.KeyPair("cluster-ssh-keypair", key_name="brownfence-cluster-ssh-keypair", public_key=ssh_keypair.public_key_openssh)
 
-# create cluster storage kms key
-cluster_kms_key = aws.kms.Key("brownfence-eks-cluster-kms-key",
-    deletion_window_in_days=30,
-    description="brownfence-eks-cluster-kms-key",
-    enable_key_rotation=True,
-    tags={
-        "Name": "brownfence-eks-cluster-kms-key"
-    }
-)
+cluster_kms_key = kms.create_cluster_kms_key()
 
 # configure cluster
-cluster_instance_role = iam.create_role("brownfence-eks-ng-role")
-cluster = eks.Cluster("browfence-eks-cluster",
+cluster_instance_role = iam.create_role("cluster-ng-role")
+cluster = eks.Cluster("cluster",
     name="browfence-eks-cluster",
     create_oidc_provider=True,
     cluster_security_group=cluster_sg,
@@ -89,22 +83,41 @@ cluster = eks.Cluster("browfence-eks-cluster",
     private_subnet_ids=vpc_stack.get_output("private_subnet_ids"),
     public_subnet_ids=vpc_stack.get_output("public_subnet_ids"),
     storage_classes="gp2",
-    node_associate_public_ip_address=False,
-    node_public_key=cluster_ssh_keypair.public_key_openssh,
-    encrypt_root_block_device=True,
-    encryption_config_key_arn=cluster_kms_key.arn
-    # node_group_options=eks.ClusterNodeGroupOptionsArgs(
-    #     encrypt_root_block_device=True,
-    #     node_associate_public_ip_address=False        
-    # )
+    encryption_config_key_arn=cluster_kms_key.arn,
+    node_group_options=eks.ClusterNodeGroupOptionsArgs(
+        encrypt_root_block_device=True,
+        node_associate_public_ip_address=False,
+        node_public_key=ssh_keypair.public_key_openssh,
+        key_name="brownfence-cluster-ssh-keypair"
+    )
+)
+
+cluster_nodegroup_launch_template = aws.ec2.LaunchTemplate("cluster-ng-launch-template",
+    block_device_mappings=[
+        aws.ec2.LaunchTemplateBlockDeviceMappingArgs(
+            device_name="/dev/xvda",
+            ebs=aws.ec2.LaunchTemplateBlockDeviceMappingEbsArgs(
+                delete_on_termination="false",
+                encrypted=True,
+                kms_key_id=cluster_kms_key.arn,
+                volume_size=120
+            )
+        )
+    ],
+    key_name="brownfence-cluster-ssh-keypair",
+    update_default_version=True
 )
 
 
-cluster_nodegroup = eks.ManagedNodeGroup(
-    "browfence-eks-ng",
+# create cluster nodegroup
+cluster_nodegroup = eks.ManagedNodeGroup("cluster-ng",
     cluster=cluster,
     cluster_name="browfence-eks-cluster",
-    node_group_name="browfence-eks-ng",
+    launch_template = {
+        "id": cluster_nodegroup_launch_template.id,
+        "version": cluster_nodegroup_launch_template.latest_version
+    },
+    node_group_name="browfence-cluster-ng",
     node_role_arn=cluster_instance_role.arn,
     scaling_config=aws.eks.NodeGroupScalingConfigArgs(
         desired_size=2,
@@ -112,13 +125,8 @@ cluster_nodegroup = eks.ManagedNodeGroup(
         max_size=2
     ),
     instance_types=["t3.medium"],
-    disk_size=120,
     subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-    remote_access=aws.eks.NodeGroupRemoteAccessArgs(
-        ec2_ssh_key="brownfence-eks-ssh-keypair",
-        source_security_group_ids=[cluster_sg.id]
-    ),
-    opts=pulumi.ResourceOptions(depends_on=[cluster, cluster_instance_role])
+    opts=pulumi.ResourceOptions(parent=cluster)
 )
 
    

@@ -27,6 +27,7 @@ def create_role(name: str) -> aws.iam.Role:
         # Create RolePolicyAttachment without returning it.
         rpa = aws.iam.RolePolicyAttachment(f"{name}-policy-{i}",
             policy_arn=policy,
-            role=role.id)
+            role=role.id
+        )
 
     return role
