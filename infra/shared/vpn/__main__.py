@@ -70,7 +70,7 @@ def create_vpn():
         aws.ssm.Parameter("org_vpn_client_private_key", 
             type="SecureString", 
             name="/org/vpn/client_private_key", 
-            value=private_key
+            value=pulumi.Output.secret(private_key)
         )
         aws.ssm.Parameter("org_vpn_client_public_key", 
             type="String", 
