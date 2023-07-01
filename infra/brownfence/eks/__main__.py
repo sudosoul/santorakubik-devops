@@ -4,15 +4,17 @@ import pulumi_aws as aws
 import pulumi_tls as tls
 import iam
 import kms
+import managed_nodegroup
 
 config = pulumi.Config()
 vpc_stack = pulumi.StackReference("santorakubik/brownfence/vpc")
 vpn_stack = pulumi.StackReference("santorakubik/brownfence/vpn")
 
 # Make sure we are deploying to Santorakubik:
+if pulumi.get_organization() != "santorakubik":
+    raise Exception(f"ERROR: IN WRONG PULUMI ORG!\nCurrent ORG:{pulumi.get_organization()}")
 if aws.get_caller_identity().account_id != "927123100668":
-    print(f"ERROR: IN WRONG AWS ACCOUNT!\nCurrent ID:{aws.get_caller_identity().account_id}")
-    exit()
+    raise Exception(f"ERROR: IN WRONG AWS ACCOUNT!\nCurrent ID:{aws.get_caller_identity().account_id}")
 
 
 # configure cluster sg
@@ -53,18 +55,7 @@ cluster_sg = aws.ec2.SecurityGroup("cluster-sg",
 
 # create cluster ssh key pair & save to SSM
 ssh_keypair = tls.PrivateKey("ssh-keypair", algorithm="ED25519")
-aws.ssm.Parameter("org_vpn_client_private_key", 
-    type="SecureString", 
-    name="/brownfence/eks/ssh_private_key", 
-    value=pulumi.Output.secret(ssh_keypair.private_key_openssh)
-)
-aws.ssm.Parameter("org_vpn_client_public_key", 
-    type="String", 
-    name="/brownfence/eks/ssh_public_key", 
-    value=ssh_keypair.public_key_openssh
-)
 ec2_keypair = aws.ec2.KeyPair("cluster-ssh-keypair", key_name="brownfence-cluster-ssh-keypair", public_key=ssh_keypair.public_key_openssh)
-
 cluster_kms_key = kms.create_cluster_kms_key()
 
 
@@ -123,7 +114,7 @@ cluster = eks.Cluster("cluster",
         node_public_key=ssh_keypair.public_key_openssh,
         key_name="brownfence-cluster-ssh-keypair"
     ),
-    user_mappings=user_mappings
+    #user_mappings=user_mappings
 )
 
 # Update the default cluster SG to allow SSH from VPN
@@ -137,51 +128,44 @@ aws.ec2.SecurityGroupRule("cluster-default-sg-custom-rule-1",
     security_group_id=cluster.core.cluster.vpc_config.cluster_security_group_id
 )
 
-
-cluster_nodegroup_launch_template = aws.ec2.LaunchTemplate("cluster-ng-launch-template",
-    block_device_mappings=[
-        aws.ec2.LaunchTemplateBlockDeviceMappingArgs(
-            device_name="/dev/xvda",
-            ebs=aws.ec2.LaunchTemplateBlockDeviceMappingEbsArgs(
-                delete_on_termination="false",
-                encrypted=True,
-                kms_key_id=cluster_kms_key.arn,
-                volume_size=120
-            )
-        )
-    ],
-    key_name="brownfence-cluster-ssh-keypair",
-    update_default_version=True,
-    tag_specifications=[aws.ec2.LaunchTemplateTagSpecificationArgs(
-        resource_type="instance",
-        tags={
-            "Name": "brownfence-eks-node",
-        },
-    )]
-)
-
-
-# create cluster nodegroup
-cluster_nodegroup = eks.ManagedNodeGroup("cluster-ng",
+# Create the 'web' nodegroup for traefik and authelia
+cluster_web_ng = managed_nodegroup.ManagedNodeGroup(
+    name="web",
+    kms_key=cluster_kms_key,
     cluster=cluster,
-    cluster_name="browfence-eks-cluster",
-    launch_template = {
-        "id": cluster_nodegroup_launch_template.id,
-        "version": cluster_nodegroup_launch_template.latest_version
-    },
-    node_group_name="browfence-cluster-ng",
-    node_role_arn=cluster_instance_role.arn,
-    scaling_config=aws.eks.NodeGroupScalingConfigArgs(
-        desired_size=2,
-        min_size=2,
-        max_size=2
-    ),
-    instance_types=["t3.medium"],
+    subnet_ids=vpc_stack.get_output("private_subnet_ids")
+).create()
+
+# Create the 'data' nodegroup for mariadb/redis/etc
+cluster_data_ng = managed_nodegroup.ManagedNodeGroup(
+    name="data",
+    kms_key=cluster_kms_key,
+    cluster=cluster,
     subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-    opts=pulumi.ResourceOptions(parent=cluster)
+    instance_type="t3.small"
+).create()
+
+# Create the 'app' nodegroup for mariadb/redis/etc
+# cluster_app_ng = managed_nodegroup.ManagedNodeGroup(
+#     name="app",
+#     kms_key=cluster_kms_key,
+#     cluster=cluster,
+#     subnet_ids=vpc_stack.get_output("private_subnet_ids"),
+#     instance_type="t3.small"
+# ).create()
+
+
+# Export to SSM & Pulumi
+aws.ssm.Parameter("cluster_ssh_private_key", 
+    type="SecureString", 
+    name="/brownfence/eks/ssh_private_key", 
+    value=pulumi.Output.secret(ssh_keypair.private_key_openssh),
+    overwrite=True
 )
-
-
-
-
+aws.ssm.Parameter("cluster_ssh_public_key", 
+    type="String", 
+    name="/brownfence/eks/ssh_public_key", 
+    value=ssh_keypair.public_key_openssh,
+    overwrite=True
+)
 pulumi.export("kubeconfig", pulumi.Output.secret(cluster.kubeconfig))
