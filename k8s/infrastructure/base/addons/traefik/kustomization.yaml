@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: web
 resources:
   - namespace.yaml
-  - source.yaml
   - release.yaml

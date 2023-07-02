@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - eks-charts-helm.yaml
   - weave-gitops.yaml
+  - traefik.yaml
