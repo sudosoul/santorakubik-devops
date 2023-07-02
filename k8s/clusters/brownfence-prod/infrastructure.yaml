@@ -11,6 +11,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./k8s/infrastructure/controllers
+  path: ./k8s/infrastructure/brownfence-prod
   prune: true
   wait: true

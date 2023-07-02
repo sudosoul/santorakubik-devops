@@ -85,7 +85,8 @@ for admin in aws.iam.get_group(group_name="skf-admins").users:
     )
 
 # configure cluster
-cluster_instance_role = iam.create_role("cluster-ng-role")
+cluster_instance_role = iam.create_cluster_role("cluster-ng-role")
+cluster_lb_role = iam.create_cluster_lb_controller_role()
 cluster = eks.Cluster("cluster",
     name="browfence-eks-cluster",
     create_oidc_provider=True,
@@ -169,3 +170,4 @@ aws.ssm.Parameter("cluster_ssh_public_key",
     overwrite=True
 )
 pulumi.export("kubeconfig", pulumi.Output.secret(cluster.kubeconfig))
+pulumi.export('aws-lb-controller-role-arn', cluster_lb_role.arn)
