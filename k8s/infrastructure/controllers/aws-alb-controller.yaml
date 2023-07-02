@@ -1,0 +1,26 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: aws-lb-controller
+  namespace: web
+spec:
+  interval: 24h
+  url: https://aws.github.io/eks-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: eks/aws-load-balancer-controller
+  namespace: web
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: eks/aws-load-balancer-controller
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: aws-lb-controller
+        namespace: web
+      interval: 12h

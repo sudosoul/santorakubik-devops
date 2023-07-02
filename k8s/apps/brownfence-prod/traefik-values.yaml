@@ -1,0 +1,13 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: web
+spec:
+  chart:
+    spec:
+      version: ">=23.1.0,<24.0.0"
+  values:
+    service:
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-2:927123100668:certificate/866eee85-fb0d-40d5-bd4c-db87f33390f0
