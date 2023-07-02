@@ -13,9 +13,6 @@ spec:
         kind: HelmRepository
         name: traefik
   interval: 50m
-  install:
-    remediation:
-      retries: 3
   # Default values
   # https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
   values:
