@@ -17,7 +17,7 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: eks/aws-load-balancer-controller
+      chart: "eks/aws-load-balancer-controller"
       version: "*"
       sourceRef:
         kind: HelmRepository
