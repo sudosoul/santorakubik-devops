@@ -3,7 +3,10 @@ kind: HelmRelease
 metadata:
   name: weave-gitops
   namespace: flux-system
+  # labels:
+  #   ng: misc
 spec:
+  targetNamespace: weave-gitops
   interval: 60m
   chart:
     spec:
