@@ -9,5 +9,5 @@ resources:
   - kube-prometheus-stack
   - kyverno
   - metrics-server
-  # - traefik
+  - traefik
   - weave-gitops
