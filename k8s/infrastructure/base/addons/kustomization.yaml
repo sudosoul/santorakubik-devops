@@ -6,9 +6,9 @@ resources:
   # - calico
   # - cert-manager
   # - flagger
-  # - kube-prometheus-stack
+  - kube-prometheus-stack
   # - kyverno
   # - metrics-server
-  # - sealed-secrets
+  - sealed-secrets
   - traefik
   - weave-gitops

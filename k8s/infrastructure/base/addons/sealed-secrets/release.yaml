@@ -5,6 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   releaseName: sealed-secrets
+  targetNamespace: kube-system
+  serviceAccountName: helm-controller
   chart:
     spec:
       chart: sealed-secrets
