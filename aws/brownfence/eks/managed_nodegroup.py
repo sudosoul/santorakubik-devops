@@ -48,8 +48,8 @@ class ManagedNodeGroup:
                     )
                 )
             ],
-            instance_type=self.instance_type,
             key_name="brownfence-cluster-ssh-keypair",
+            instance_type=self.instance_type,
             update_default_version=True,
             tag_specifications=[aws.ec2.LaunchTemplateTagSpecificationArgs(
                 resource_type="instance",
@@ -82,9 +82,10 @@ class ManagedNodeGroup:
             labels={
                 "ng": self.name
             },
-            #instance_types=[self.instance_type],
             subnet_ids=self.subnet_ids,
             opts=pulumi.ResourceOptions(parent=self.cluster)
         )
+
+
         
         return managed_nodegroup

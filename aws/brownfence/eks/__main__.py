@@ -153,7 +153,7 @@ cluster_data_ng = managed_nodegroup.ManagedNodeGroup(
     max_size=2,
 ).create()
 
-# Create the 'app' nodegroup for mariadb/redis/etc
+# Create the 'app' nodegroup for apps
 # cluster_app_ng = managed_nodegroup.ManagedNodeGroup(
 #     name="app",
 #     kms_key=cluster_kms_key,
