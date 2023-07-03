@@ -9,5 +9,5 @@ spec:
       nodeSelector:
         ng: data
   
-  values:
-    initdbScriptsConfigMap: mariadb-initdb-config.yaml
+  # values:
+  #   initdbScriptsConfigMap: mariadb-initdb-config.yaml
