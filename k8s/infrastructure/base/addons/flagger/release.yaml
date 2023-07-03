@@ -21,7 +21,7 @@ spec:
   upgrade:
     crds: CreateReplace
   dependsOn:
-    - name: ingress-nginx
+    - name: aws-load-balancer-controller
   values:
     meshProvider: kubernetes
     metricsServer: http://kube-prometheus-stack-prometheus.monitoring:9090
