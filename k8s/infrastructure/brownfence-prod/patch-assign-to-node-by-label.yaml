@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: required-for-kustomize-but-not-used
+spec:
+  postRenderers:
+    # web ng assignment
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            labelSelector: ng=web
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: web
+    # apps ng assignment
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            labelSelector: ng=apps
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: apps
+    # data ng assignment
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            labelSelector: ng=data
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: data
