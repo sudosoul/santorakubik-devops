@@ -1,6 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - authelia
   - aws-load-balancer-controller
-  - weave-gitops
+  - calico
+  - cert-manager
+  - flagger
+  - kube-prometheus-stack
+  - kyverno
+  - metrics-server
   - traefik
+  - weave-gitops

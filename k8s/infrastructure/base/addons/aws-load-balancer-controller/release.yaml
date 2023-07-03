@@ -25,4 +25,4 @@ spec:
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${awsLoadBalancerControllerIamRoleArn}
-    clusterName: ${clusterName}
+    clusterName: ${awsClusterName}

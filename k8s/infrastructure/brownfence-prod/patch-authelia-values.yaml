@@ -2,11 +2,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: traefik
-  namespace: web
+  namespace: traefik
 spec:
-  chart:
-    spec:
-      version: ">=23.1.0,<24.0.0"
   values:
     service:
       annotations:

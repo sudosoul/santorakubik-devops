@@ -3,7 +3,11 @@ kind: Kustomization
 resources:
   - ../base
 patches:
-  - path: traefik-values.yaml
+  - path: patch-traefik-values.yaml
     target:
       kind: HelmRelease
       name: traefik
+  - path: patch-authelia-values.yaml
+    target:
+      kind: HelmRelease
+      name: authelia

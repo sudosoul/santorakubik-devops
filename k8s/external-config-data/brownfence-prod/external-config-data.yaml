@@ -1,7 +1,11 @@
 apiVersion: v1
 data:
   awsLoadBalancerControllerIamRoleArn: arn:aws:iam::927123100668:role/lb-controller-role-8084390
-  clusterName: brownfence-eks-cluster
+  awsClusterName: brownfence-eks-cluster
+  acmeEmail: rob@bettercommerce.com
+  acmeServer: https://acme-v02.api.letsencrypt.org/directory
+  autheliaRootDomain: colerange.us
+  autheliaSubDomain: auth.colerange.us
 kind: ConfigMap
 metadata:
   name: external-config-data
