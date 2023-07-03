@@ -4,7 +4,17 @@ metadata:
   name: traefik
   namespace: traefik
 spec:
-  template:
-    spec:
-      nodeSelector:
-        ng: web
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            apiVersion: apps/v1
+            metadata:
+              name: metrics-server
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: web
+
+  

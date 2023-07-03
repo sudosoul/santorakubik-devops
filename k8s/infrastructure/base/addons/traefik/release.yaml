@@ -4,7 +4,6 @@ metadata:
   name: traefik
   namespace: traefik
 spec:
-  template:
   releaseName: traefik
   chart:
     spec:
