@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
   namespace: flux-system
+  labels:
+    ng: apps
 spec:
   releaseName: kube-prometheus-stack
   serviceAccountName: helm-controller

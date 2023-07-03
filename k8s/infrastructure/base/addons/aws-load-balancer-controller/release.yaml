@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: aws-load-balancer-controller
   namespace: flux-system
+  labels:
+    ng: web
 spec:
   releaseName: aws-load-balancer-controller
   serviceAccountName: helm-controller

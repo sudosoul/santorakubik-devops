@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: kyverno
   namespace: flux-system
+  labels:
+    ng: apps
 spec:
   releaseName: kyverno
   targetNamespace: kyverno

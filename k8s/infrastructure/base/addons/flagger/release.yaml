@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: flagger
   namespace: flux-system
+  labels:
+    ng: apps
 spec:
   releaseName: flagger
   serviceAccountName: helm-controller

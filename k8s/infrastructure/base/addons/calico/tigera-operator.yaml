@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: tigera-operator
   namespace: flux-system
+  labels:
+    ng: apps
 spec:
   releaseName: tigera-operator
   serviceAccountName: helm-controller

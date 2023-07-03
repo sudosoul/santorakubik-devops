@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: mariadb
   namespace: flux-system
+  labels:
+    ng: data
 spec:
   targetNamespace: mariadb
   releaseName: mariadb
