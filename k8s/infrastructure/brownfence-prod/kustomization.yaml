@@ -18,3 +18,7 @@ patches:
     target:
       kind: HelmRelease
       name: openldap
+   - path: patch-redis-release.yaml
+    target:
+      kind: HelmRelease
+      name: redis
