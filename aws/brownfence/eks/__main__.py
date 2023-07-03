@@ -134,7 +134,11 @@ cluster_web_ng = managed_nodegroup.ManagedNodeGroup(
     name="web",
     kms_key=cluster_kms_key,
     cluster=cluster,
-    subnet_ids=vpc_stack.get_output("private_subnet_ids")
+    subnet_ids=vpc_stack.get_output("private_subnet_ids"),
+    instance_type="t3.small",
+    desired_size=1,
+    min_size=1,
+    max_size=2,
 ).create()
 
 # Create the 'data' nodegroup for mariadb/redis/etc
@@ -143,7 +147,10 @@ cluster_data_ng = managed_nodegroup.ManagedNodeGroup(
     kms_key=cluster_kms_key,
     cluster=cluster,
     subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-    instance_type="t3.small"
+    instance_type="t3.small",
+    desired_size=1,
+    min_size=1,
+    max_size=2,
 ).create()
 
 # Create the 'app' nodegroup for mariadb/redis/etc
