@@ -3,11 +3,11 @@ kind: Kustomization
 resources:
   - ../base
 patches:
-  - path: patch-traefik-values.yaml
+  - path: patch-traefik-release.yaml
     target:
       kind: HelmRelease
       name: traefik
-  - path: patch-authelia-values.yaml
+  - path: patch-mariadb-release.yaml
     target:
       kind: HelmRelease
-      name: authelia
+      name: mariadb

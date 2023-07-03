@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - authelia.yaml
+  - bitnami-charts.yaml
   - calico.yaml
   - cert-manager.yaml
   - eks-charts-helm.yaml

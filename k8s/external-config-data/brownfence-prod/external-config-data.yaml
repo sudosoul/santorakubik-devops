@@ -5,7 +5,7 @@ data:
   acmeEmail: rob@bettercommerce.com
   acmeServer: https://acme-v02.api.letsencrypt.org/directory
   autheliaRootDomain: colerange.us
-  autheliaSubDomain: auth.colerange.us
+  autheliaAuthDomain: auth.colerange.us
 kind: ConfigMap
 metadata:
   name: external-config-data
