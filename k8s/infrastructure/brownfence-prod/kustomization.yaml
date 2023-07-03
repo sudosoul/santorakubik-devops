@@ -6,7 +6,6 @@ patches:
   - path: patch-all-secrets-use-sealed-secrets.yaml
     target:
       kind: HelmRelease
-      name: "*"
   - path: patch-traefik-release.yaml
     target:
       kind: HelmRelease
