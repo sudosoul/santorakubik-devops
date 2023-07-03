@@ -3,11 +3,11 @@ kind: Kustomization
 resources:
   # - authelia
   - aws-load-balancer-controller
-  - calico
-  - cert-manager
-  - flagger
-  - kube-prometheus-stack
-  - kyverno
-  - metrics-server
+  # - calico
+  # - cert-manager
+  # - flagger
+  # - kube-prometheus-stack
+  # - kyverno
+  # - metrics-server
   - traefik
   - weave-gitops
