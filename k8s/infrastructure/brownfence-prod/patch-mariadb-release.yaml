@@ -4,10 +4,15 @@ metadata:
   name: mariadb
   namespace: mariadb
 spec:
-  template:
-    spec:
-      nodeSelector:
-        ng: data
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: data
   
   # values:
   #   initdbScriptsConfigMap: mariadb-initdb-config.yaml

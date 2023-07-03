@@ -3,7 +3,12 @@ kind: HelmRelease
 metadata:
   name: openldap
 spec:
-  template:
-    spec:
-      nodeSelector:
-        ng: data
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            spec:
+              template:
+                spec:
+                  nodeSelector:
+                    ng: data
