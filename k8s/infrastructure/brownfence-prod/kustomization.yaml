@@ -6,6 +6,15 @@ patches:
   - path: patch-migrate-all-secrets-to-sealed-secrets.yaml
     target:
       kind: HelmRelease
-  - path: patch-assign-to-node-by-label.yaml
+  - path: patch-node-selector-web.yaml
     target:
       kind: HelmRelease
+      labelSelector: ng=web
+  - path: patch-node-selector-apps.yaml
+    target:
+      kind: HelmRelease
+      labelSelector: ng=apps 
+  - path: patch-node-selector-data.yaml
+    target:
+      kind: HelmRelease
+      labelSelector: ng=data
