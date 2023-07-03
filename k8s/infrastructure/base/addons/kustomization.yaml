@@ -4,10 +4,10 @@ resources:
   # - authelia
   - aws-load-balancer-controller
   # - calico
-  # - cert-manager
+  - cert-manager
   # - flagger
-  - kube-prometheus-stack
-  # - kyverno
+  # - kube-prometheus-stack
+  - kyverno
   # - metrics-server
   - sealed-secrets
   - traefik
