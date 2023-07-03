@@ -5,6 +5,7 @@ import pulumi_tls as tls
 import iam
 import kms
 import managed_nodegroup
+import json
 
 config = pulumi.Config()
 vpc_stack = pulumi.StackReference("santorakubik/brownfence/vpc")
@@ -61,28 +62,22 @@ cluster_kms_key = kms.create_cluster_kms_key()
 
 # Map AWS IAM users in `sfk-admins` group to Kubernetes internal RBAC admin group. 
 #
-# Mapping individual users avoids having to go from a group to a role with assume-role policies.
-# Kubernetes has its own permissions (RBAC) system, with predefined groups for
-# common permissions levels. AWS EKS provides translation from IAM to that, but we
-# must explicitly map particular users or roles that should be granted permissions
-# within the cluster.
-#
 # AWS docs: https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html
 # Detailed example: https://apperati.io/articles/managing_eks_access-bs/
 # IAM groups are not supported, only users or roles:
 #     https://github.com/kubernetes-sigs/aws-iam-authenticator/issues/176
-user_mappings = []
-for admin in aws.iam.get_group(group_name="skf-admins").users:
-    user_mappings.append(
-        eks.UserMappingArgs(
-            # AWS IAM user to set permissions for
-            user_arn=admin.arn,
-            # k8s RBAC group from which this IAM user will get permissions
-            groups=["system:masters"],
-            # k8s RBAC username to create for the user
-            username=admin.arn.replace(f"arn:aws:iam::{aws.get_caller_identity().account_id}:user/", ""),
-        )
-    )
+# user_mappings = []
+# for admin in aws.iam.get_group(group_name="skf-admins").users:
+#     user_mappings.append(
+#         eks.UserMappingArgs(
+#             # AWS IAM user to set permissions for
+#             user_arn=admin.arn,
+#             # k8s RBAC group from which this IAM user will get permissions
+#             groups=["system:masters"],
+#             # k8s RBAC username to create for the user
+#             username=admin.arn.replace(f"arn:aws:iam::{aws.get_caller_identity().account_id}:user/", ""),
+#         )
+#     )
 
 # configure cluster
 cluster_instance_role = iam.create_cluster_role("cluster-ng-role")
@@ -129,38 +124,19 @@ aws.ec2.SecurityGroupRule("cluster-default-sg-custom-rule-1",
     security_group_id=cluster.core.cluster.vpc_config.cluster_security_group_id
 )
 
-# Create the 'web' nodegroup for traefik and authelia
-cluster_web_ng = managed_nodegroup.ManagedNodeGroup(
-    name="web",
-    kms_key=cluster_kms_key,
-    cluster=cluster,
-    subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-    instance_type="t3.small",
-    desired_size=1,
-    min_size=1,
-    max_size=2,
-).create()
-
-# Create the 'data' nodegroup for mariadb/redis/etc
-cluster_data_ng = managed_nodegroup.ManagedNodeGroup(
-    name="data",
-    kms_key=cluster_kms_key,
-    cluster=cluster,
-    subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-    instance_type="t3.small",
-    desired_size=1,
-    min_size=1,
-    max_size=2,
-).create()
-
-# Create the 'app' nodegroup for apps
-# cluster_app_ng = managed_nodegroup.ManagedNodeGroup(
-#     name="app",
-#     kms_key=cluster_kms_key,
-#     cluster=cluster,
-#     subnet_ids=vpc_stack.get_output("private_subnet_ids"),
-#     instance_type="t3.small"
-# ).create()
+# Create nodegroup according to Pulumi.eks.yaml config
+nodegroups = json.loads(config.get('nodegroups'))
+for nodegroup in nodegroups:
+    managed_nodegroup.ManagedNodeGroup(
+        name=nodegroup['name'],
+        kms_key=cluster_kms_key,
+        cluster=cluster,
+        subnet_ids=vpc_stack.get_output("private_subnet_ids"),
+        instance_type=nodegroup['instance_type'],
+        desired_size=nodegroup['desired_size'],
+        min_size=nodegroup['min_size'],
+        max_size=nodegroup['max_size'],
+    ).create()
 
 
 # Export to SSM & Pulumi
