@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ../base
 patches:
-  - patch: patch-all-secrets-use-sealed-secrets.yaml
+  - path: patch-all-secrets-use-sealed-secrets.yaml
     target:
       kind: HelmRelease
   - path: patch-traefik-release.yaml
