@@ -78,6 +78,9 @@ class ManagedNodeGroup:
                 min_size=self.min_size,
                 max_size=self.max_size
             ),
+            labels={
+                "ng": self.name
+            },
             instance_types=[self.instance_type],
             subnet_ids=self.subnet_ids,
             opts=pulumi.ResourceOptions(parent=self.cluster)
