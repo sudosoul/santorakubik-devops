@@ -9,6 +9,7 @@ resources:
   # - kube-prometheus-stack
   - kyverno
   # - metrics-server
+  - openldap
   - sealed-secrets
   - traefik
   - weave-gitops

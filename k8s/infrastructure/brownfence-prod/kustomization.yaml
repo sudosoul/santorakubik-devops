@@ -14,4 +14,7 @@ patches:
     target:
       kind: HelmRelease
       name: mariadb
-  
+  - path: patch-openldap-release.yaml
+    target:
+      kind: HelmRelease
+      name: openldap
