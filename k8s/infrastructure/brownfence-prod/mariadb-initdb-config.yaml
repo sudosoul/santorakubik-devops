@@ -6,3 +6,4 @@ metadata:
 data:
   init-authelia-db.sql: |
     CREATE DATABASE IF NOT EXISTS authelia;
+    
