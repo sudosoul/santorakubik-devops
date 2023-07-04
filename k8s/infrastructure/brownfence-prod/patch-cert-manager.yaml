@@ -1,0 +1,18 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: required-for-kustomize-but-not-used
+spec:
+  values:
+    installCRDs: true
+    nodeSelector:
+      ng: apps
+    webhook:
+      nodeSelector:
+        ng: apps
+    cainjector:
+      nodeSelector:
+        ng: apps
+    startupapicheck:
+      nodeSelector:
+        ng: apps

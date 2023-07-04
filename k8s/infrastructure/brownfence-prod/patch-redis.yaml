@@ -1,0 +1,12 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: required-for-kustomize-but-not-used
+spec:
+  values:
+    master:
+      nodeSelector:
+        ng: data
+    replica:
+      nodeSelector:
+        ng: data

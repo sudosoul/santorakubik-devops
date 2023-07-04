@@ -10,15 +10,31 @@ resources:
   - ../base/addons/traefik
   - ../base/addons/weave-gitops
 patches:
-  - path: patch-node-selector-web.yaml
+  - path: patch-aws-load-balancer-controller.yaml
     target:
       kind: HelmRelease
-      labelSelector: ng=web
-  - path: patch-node-selector-apps.yaml
+      name: aws-load-balancer-controller
+  - path: patch-cert-manager.yaml
     target:
       kind: HelmRelease
-      labelSelector: ng=apps 
-  - path: patch-node-selector-data.yaml
+      name: cert-manager
+  - path: patch-mariadb.yaml
     target:
       kind: HelmRelease
-      labelSelector: ng=data
+      name: mariadb
+  - path: patch-redis.yaml
+    target:
+      kind: HelmRelease
+      name: redis
+  - path: patch-sealed-secrets.yaml
+    target:
+      kind: HelmRelease
+      name: sealed-secrets
+  - path: patch-traefik.yaml
+    target:
+      kind: HelmRelease
+      name: traefik
+  - path: patch-weave-gitops.yaml
+    target:
+      kind: HelmRelease
+      name: weave-gitops

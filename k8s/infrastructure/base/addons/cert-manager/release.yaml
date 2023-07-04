@@ -4,7 +4,7 @@ metadata:
   name: cert-manager
   namespace: flux-system
   labels:
-    ng: web
+    ng: apps
 spec:
   targetNamespace: cert-manager
   interval: 30m
@@ -17,5 +17,9 @@ spec:
         name: cert-manager
         namespace: cert-manager
       interval: 12h
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   values:
     installCRDs: true
