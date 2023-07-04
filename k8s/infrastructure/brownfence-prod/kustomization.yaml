@@ -3,10 +3,7 @@ kind: Kustomization
 resources:
   - ../base
 patches:
-  - path: patch-migrate-all-secrets-to-sealed-secrets.yaml
-    target:
-      kind: HelmRelease
-  - path: patch-traefik-helm-values.yaml
+  - path: patch-node-selector-web.yaml
     target:
       kind: HelmRelease
       labelSelector: ng=web
