@@ -4,7 +4,7 @@ resources:
   - aws-load-balancer-controller
   - calico
   - cert-manager
-  # - flagger
+  - flagger
   - kube-prometheus-stack
   - kyverno
   - metrics-server
