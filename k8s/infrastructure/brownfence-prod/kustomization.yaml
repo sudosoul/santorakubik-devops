@@ -6,7 +6,7 @@ patches:
   - path: patch-migrate-all-secrets-to-sealed-secrets.yaml
     target:
       kind: HelmRelease
-  - path: patch-node-selector-web.yaml
+  - path: patch-traefik-helm-values.yaml
     target:
       kind: HelmRelease
       labelSelector: ng=web

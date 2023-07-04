@@ -3,12 +3,6 @@ kind: HelmRelease
 metadata:
   name: required-for-kustomize-but-not-used
 spec:
-  postRenderers:
-    - kustomize:
-        patchesStrategicMerge:
-          - kind: Deployment
-            spec:
-              template:
-                spec:
-                  nodeSelector:
-                    ng: apps
+  values:
+    nodeSelector:
+      ng: apps
