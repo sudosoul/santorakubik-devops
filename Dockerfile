@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     curl \
     git \
     nano \
+    openssl \
     python3 \ 
     python3-pip \
     sed \
@@ -43,7 +44,3 @@ RUN wget https://get.helm.sh/helm-v3.12.1-linux-amd64.tar.gz \
     && rm -rf helm*
 # flux
 RUN curl -s https://fluxcd.io/install.sh | sudo bash
-
-RUN echo "cd src && source .env && git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_TOKEN`git remote get-url origin --push | sed 's/git@/@/g'`" >> init-dev.sh \
-    && chmod +x init-dev.sh
-

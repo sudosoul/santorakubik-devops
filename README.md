@@ -7,15 +7,19 @@
 4. Git Repo Access (SSH key)
 
 ## Setup
-1. Build the local development docker image
+1. Set values in `.env` file
+```
+cp .env.tmpl .env
+```
+2. Build the local development docker image
 ```
 docker build . -t santorakubik-devops:latest
 ```
-2. Run the local development docker container
+3. Run the local development docker container
 ```
 docker run -v `pwd`:/src -it santorakubik-devops:latest bash
 ```
-3. Initialize the local development container (from inside the container)
+4. Initialize the local development container (from inside the container)
 ```
 cd src
 source .env
