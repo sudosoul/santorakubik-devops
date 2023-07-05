@@ -4,8 +4,8 @@ resources:
   - ../base/sources
   - ../base/addons/aws-load-balancer-controller
   - ../base/addons/cert-manager
-  - ../base/addons/mariadb
-  - ../base/addons/redis
+  # - ../base/addons/mariadb
+  # - ../base/addons/redis
   - ../base/addons/sealed-secrets
   - ../base/addons/traefik
   - ../base/addons/weave-gitops
@@ -18,14 +18,14 @@ patches:
     target:
       kind: HelmRelease
       name: cert-manager
-  - path: patch-mariadb.yaml
-    target:
-      kind: HelmRelease
-      name: mariadb
-  - path: patch-redis.yaml
-    target:
-      kind: HelmRelease
-      name: redis
+  # - path: patch-mariadb.yaml
+  #   target:
+  #     kind: HelmRelease
+  #     name: mariadb
+  # - path: patch-redis.yaml
+  #   target:
+  #     kind: HelmRelease
+  #     name: redis
   - path: patch-sealed-secrets.yaml
     target:
       kind: HelmRelease
