@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ../base/sources
   - ../base/addons/aws-load-balancer-controller
-  # - ../base/addons/cert-manager
+  - ../base/addons/cert-manager
   # - ../base/addons/mariadb
   # - ../base/addons/redis
   - ../base/addons/sealed-secrets
@@ -13,10 +13,10 @@ patches:
     target:
       kind: HelmRelease
       name: aws-load-balancer-controller
-  # - path: patch-cert-manager.yaml
-  #   target:
-  #     kind: HelmRelease
-  #     name: cert-manager
+  - path: patch-cert-manager.yaml
+    target:
+      kind: HelmRelease
+      name: cert-manager
   # - path: patch-mariadb.yaml
   #   target:
   #     kind: HelmRelease
