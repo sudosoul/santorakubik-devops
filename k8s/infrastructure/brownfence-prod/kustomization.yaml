@@ -6,7 +6,7 @@ resources:
   # - ../base/addons/cert-manager
   # - ../base/addons/mariadb
   # - ../base/addons/redis
-  # - ../base/addons/sealed-secrets
+  - ../base/addons/sealed-secrets
   - ../base/addons/traefik
   - ../base/addons/weave-gitops
 patches:
@@ -26,10 +26,10 @@ patches:
   #   target:
   #     kind: HelmRelease
   #     name: redis
-  # - path: patch-sealed-secrets.yaml
-  #   target:
-  #     kind: HelmRelease
-  #     name: sealed-secrets
+  - path: patch-sealed-secrets.yaml
+    target:
+      kind: HelmRelease
+      name: sealed-secrets
   - path: patch-traefik.yaml
     target:
       kind: HelmRelease
