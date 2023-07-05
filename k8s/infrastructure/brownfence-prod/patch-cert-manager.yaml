@@ -6,13 +6,13 @@ spec:
   values:
     installCRDs: true
     nodeSelector:
-      ng: apps
+      ng: web
     webhook:
       nodeSelector:
-        ng: apps
+        ng: web
     cainjector:
       nodeSelector:
-        ng: apps
+        ng: web
     startupapicheck:
       nodeSelector:
-        ng: apps
+        ng: web
