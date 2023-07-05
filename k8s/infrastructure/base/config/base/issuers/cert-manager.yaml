@@ -10,8 +10,8 @@ spec:
     email: ${acmeEmail}
     server: ${acmeServer}
     privateKeySecretRef:
-      name: letsencrypt-traefik
+      name: letsencrypt-nginx
     solvers:
       - http01:
           ingress:
-            class: traefik
+            class: nginx
