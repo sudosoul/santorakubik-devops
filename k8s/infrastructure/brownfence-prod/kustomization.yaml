@@ -34,4 +34,4 @@ patches:
     target:
       kind: HelmRelease
       name: sealed-secrets
-  
+
