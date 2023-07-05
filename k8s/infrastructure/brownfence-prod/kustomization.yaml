@@ -8,7 +8,6 @@ resources:
   # - ../base/addons/redis
   - ../base/addons/sealed-secrets
   - ../base/addons/traefik
-  - ../base/addons/weave-gitops
 patches:
   - path: patch-aws-load-balancer-controller.yaml
     target:
@@ -34,7 +33,3 @@ patches:
     target:
       kind: HelmRelease
       name: traefik
-  - path: patch-weave-gitops.yaml
-    target:
-      kind: HelmRelease
-      name: weave-gitops
