@@ -5,9 +5,9 @@ resources:
   - ../base/addons/aws-load-balancer-controller
   - ../base/addons/cert-manager
   # - ../base/addons/mariadb
+  - ../base/addons/nginx
   # - ../base/addons/redis
   - ../base/addons/sealed-secrets
-  - ../base/addons/traefik
 patches:
   - path: patch-aws-load-balancer-controller.yaml
     target:
@@ -21,6 +21,10 @@ patches:
   #   target:
   #     kind: HelmRelease
   #     name: mariadb
+  - path: patch-nginx.yaml
+    target:
+      kind: HelmRelease
+      name: nginx
   # - path: patch-redis.yaml
   #   target:
   #     kind: HelmRelease
@@ -29,7 +33,4 @@ patches:
     target:
       kind: HelmRelease
       name: sealed-secrets
-  - path: patch-traefik.yaml
-    target:
-      kind: HelmRelease
-      name: traefik
+  

@@ -9,7 +9,7 @@ resources:
   - eks-charts-helm.yaml
   - flagger.yaml
   - kyverno.yaml
+  - nginx.yaml
   - openldap.yaml
   - prometheus.yaml
-  - traefik.yaml
   - weave-gitops.yaml
