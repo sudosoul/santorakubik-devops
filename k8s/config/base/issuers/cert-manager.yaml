@@ -4,8 +4,6 @@ kind: ClusterIssuer
 metadata:
   name: letsencrypt
 spec:
-  dependsOn:
-    - name: ../../addons/cert-manager
   acme:
     email: ${acmeEmail}
     server: ${acmeServer}

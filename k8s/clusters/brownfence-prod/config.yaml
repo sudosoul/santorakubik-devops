@@ -13,3 +13,7 @@ spec:
     name: flux-system
   path: ./k8s/config/brownfence-prod
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: external-config-data

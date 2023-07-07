@@ -4,7 +4,7 @@ metadata:
   name: cert-manager
   namespace: flux-system
   labels:
-    ng: apps
+    ng: web
 spec:
   releaseName: cert-manager
   targetNamespace: cert-manager
