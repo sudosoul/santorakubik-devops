@@ -1,10 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # - ../base/config
+  - ../base/config
   - ../base/sources
   - ../base/addons/aws-load-balancer-controller
-  #- ../base/addons/cert-manager
+  - ../base/addons/cert-manager
   # - ../base/addons/mariadb
   - ../base/addons/metrics-server
   - ../base/addons/nginx
@@ -15,10 +15,10 @@ patches:
     target:
       kind: HelmRelease
       name: aws-load-balancer-controller
-  # - path: patch-cert-manager.yaml
-  #   target:
-  #     kind: HelmRelease
-  #     name: cert-manager
+  - path: patch-cert-manager.yaml
+    target:
+      kind: HelmRelease
+      name: cert-manager
   # - path: patch-mariadb.yaml
   #   target:
   #     kind: HelmRelease
