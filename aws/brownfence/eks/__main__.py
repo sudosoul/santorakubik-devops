@@ -113,6 +113,26 @@ cluster = eks.Cluster("cluster",
     #user_mappings=user_mappings
 )
 
+# Add k8s tags to subnets for aws lb discovery
+pulumi.Output.all(cluster_name=cluster.eks_cluster.name, subnet_ids=vpc_stack.get_output('public_subnet_ids')) \
+    .apply(lambda args: \
+        [aws.ec2.Tag(\
+            f"{subnet_id}-brownfence-cluster-tag", \
+            resource_id=subnet_id, \
+            key=f"kubernetes.io/cluster/{args['cluster_name']}", \
+            value='shared')\
+        for subnet_id in args['subnet_ids']]\
+)
+pulumi.Output.all(cluster_name=cluster.eks_cluster.name, subnet_ids=vpc_stack.get_output('private_subnet_ids')) \
+    .apply(lambda args: \
+        [aws.ec2.Tag(\
+            f"{subnet_id}-brownfence-cluster-tag", \
+            resource_id=subnet_id, \
+            key=f"kubernetes.io/cluster/{args['cluster_name']}", \
+            value='shared')\
+        for subnet_id in args['subnet_ids']]\
+)
+
 # Update the default cluster SG to allow SSH from VPN
 aws.ec2.SecurityGroupRule("cluster-default-sg-custom-rule-1",
     description="allow SSH from VPN",
