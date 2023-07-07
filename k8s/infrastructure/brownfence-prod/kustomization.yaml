@@ -6,6 +6,7 @@ resources:
   - ../base/addons/aws-load-balancer-controller
   #- ../base/addons/cert-manager
   # - ../base/addons/mariadb
+  - ../base/addons/metrics-server
   - ../base/addons/nginx
   # - ../base/addons/redis
   - ../base/addons/sealed-secrets
