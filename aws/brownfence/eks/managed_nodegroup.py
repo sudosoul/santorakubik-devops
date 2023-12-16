@@ -1,6 +1,7 @@
 import pulumi
 import pulumi_aws as aws
 import pulumi_eks as eks
+import base64
 
 
 class ManagedNodeGroup:
@@ -50,7 +51,6 @@ class ManagedNodeGroup:
             ],
             key_name="brownfence-cluster-ssh-keypair",
             instance_type=self.instance_type,
-            update_default_version=True,
             tag_specifications=[aws.ec2.LaunchTemplateTagSpecificationArgs(
                 resource_type="instance",
                 tags={
@@ -58,7 +58,9 @@ class ManagedNodeGroup:
                     "nodegroup": f"brownfence-cluster-ng-{self.name}",
                     "cluster": "brownfence"
                 },
-            )]
+            )],
+            update_default_version=True,
+            user_data=(lambda path: base64.b64encode(open(path).read().encode()).decode())('files/user_data.sh')
         )
 
         return launch_template
