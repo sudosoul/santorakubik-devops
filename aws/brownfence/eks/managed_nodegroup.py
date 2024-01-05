@@ -49,6 +49,9 @@ class ManagedNodeGroup:
                     )
                 )
             ],
+            network_interfaces=[aws.ec2.LaunchTemplateNetworkInterfaceArgs(
+                associate_public_ip_address="true",
+            )],
             key_name="brownfence-cluster-ssh-keypair",
             instance_type=self.instance_type,
             tag_specifications=[aws.ec2.LaunchTemplateTagSpecificationArgs(

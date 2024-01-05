@@ -1,5 +1,5 @@
 config:
-  aws:region: us-east-2
+  aws:region: us-east-1
   nodegroups:
     - name: web
       instance_type: t3.medium
