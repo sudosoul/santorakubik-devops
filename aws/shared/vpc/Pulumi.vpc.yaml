@@ -1,5 +1,5 @@
 config:
-  aws:region: us-east-2
+  aws:region: us-east-1
   vpc_name: main
   number_of_availability_zones: 2
   vpc_cidr: "10.0.0.0/16"
