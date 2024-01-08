@@ -61,9 +61,29 @@ def create(cluster):
         
         return services_sg
     
-    def createNextcloudService():
-        f
-
+    def create_cluster_domain_wildcard_cert():
+        server_cert = aws.acm.Certificate("server-cert",
+            domain_name="vpn.colerange.vet",
+            validation_method="DNS"
+        )
+        server_cert_validation = aws.route53.Record("server-cert-validation",
+            name=server_cert.domain_validation_options[0].resource_record_name,
+            records=[server_cert.domain_validation_options[0].resource_record_value],
+            ttl=60,
+            type=server_cert.domain_validation_options[0].resource_record_type,
+            zone_id=aws.route53.get_zone(name="colerange.vet", private_zone=False).zone_id
+        )
+        server_cert_certificate_validation = aws.acm.CertificateValidation("cert",
+            certificate_arn=server_cert.arn,
+            validation_record_fqdns=[server_cert_validation.fqdn]
+        )
+        
+        return server_cert_certificate_validation
+    
+    def createAlb(alb_sg_id):
+        
+    
     alb_sg = createAlbSecurityGroup()
     createServiceSecurityGroup(alb_sg.id)
+    alb = createAlb(alb_sg.id)
         

@@ -11,6 +11,8 @@ if aws.get_caller_identity().account_id != "701567759855":
 
 
 def create():
+    deploy_alb()
+    
     def deploy_alb():
         alb_sg = create_alb_sg()
         alb = create_alb()
